@@ -1034,3 +1034,18 @@ button:active {
         touch-action: none;
     }
 }
+
+/* =========================================================
+   TOUCH / MOBILE INTERACTION
+   ========================================================= */
+
+/* Graphs should allow normal page scrolling and zooming */
+#ytCanvas,
+#yxCanvas {
+    touch-action: auto;
+}
+
+/* Main wave remains interactive for particle selection */
+#waveCanvas {
+    touch-action: pan-y pinch-zoom;
+}
