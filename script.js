@@ -3,7 +3,8 @@
    DIFFERENTIATING y-t AND y-x GRAPHS
 
    Wave equation:
-   y(x,t) = A sin(ωt - kx)
+
+       y(x,t) = A sin(ωt - kx)
 
    ω = 2πf
    k = 2π/λ
@@ -15,6 +16,10 @@
    y-x:
    All particles → displacement versus distance
    at one particular instant
+
+   IMPORTANT:
+   The simulation time is unlimited.
+   The y-t graph automatically scrolls.
    ========================================================= */
 
 "use strict";
@@ -27,9 +32,16 @@
 const TWO_PI = Math.PI * 2;
 
 const WAVE_LENGTH = 8;
+
 const PARTICLE_COUNT = 33;
 
-const GRAPH_TIME = 4;
+/*
+   Visible time span of the y-t graph.
+
+   This is NOT a limit on simulation time.
+   The graph scrolls continuously after this.
+*/
+const YT_WINDOW = 6;
 
 
 /* =========================================================
@@ -37,7 +49,9 @@ const GRAPH_TIME = 4;
    ========================================================= */
 
 let amplitude = 1.0;
+
 let wavelength = 4.0;
+
 let frequency = 0.5;
 
 let selectedX = 2.0;
@@ -45,6 +59,7 @@ let selectedX = 2.0;
 let time = 0;
 
 let isPlaying = false;
+
 let lastTime = 0;
 
 let animationSpeed = 1;
@@ -162,9 +177,9 @@ function getWaveSpeed() {
 
 
 /*
-   Main wave equation:
+   Main travelling-wave equation:
 
-   y(x,t) = A sin(ωt - kx)
+       y(x,t) = A sin(ωt - kx)
 */
 
 function getDisplacement(x, t) {
@@ -175,9 +190,11 @@ function getDisplacement(x, t) {
     const omega =
         getAngularFrequency();
 
+
     return amplitude *
         Math.sin(
-            omega * t - k * x
+            omega * t -
+            k * x
         );
 }
 
@@ -204,6 +221,7 @@ function resizeCanvas(canvas) {
 
     const ratio =
         window.devicePixelRatio || 1;
+
 
     const width =
         canvas.clientWidth;
@@ -237,7 +255,9 @@ function resizeCanvas(canvas) {
 function resizeAllCanvases() {
 
     resizeCanvas(waveCanvas);
+
     resizeCanvas(ytCanvas);
+
     resizeCanvas(yxCanvas);
 
     drawEverything();
@@ -257,42 +277,52 @@ function updateDisplays() {
     amplitudeValue.textContent =
         amplitude.toFixed(1);
 
+
     wavelengthValue.textContent =
         wavelength.toFixed(1);
 
+
     frequencyValue.textContent =
         frequency.toFixed(1);
+
 
     selectedXValue.textContent =
         selectedX.toFixed(1);
 
 
     particlePosition.textContent =
-        selectedX.toFixed(1) + " m";
+        selectedX.toFixed(1) +
+        " m";
 
 
     timeDisplay.textContent =
-        time.toFixed(2) + " s";
+        time.toFixed(2) +
+        " s";
 
 
     displacementDisplay.textContent =
-        displacement.toFixed(2) + " m";
+        displacement.toFixed(2) +
+        " m";
 
 
     speedDisplay.textContent =
-        getWaveSpeed().toFixed(2) + " m/s";
+        getWaveSpeed().toFixed(2) +
+        " m/s";
 
 
     ytParticlePosition.textContent =
-        selectedX.toFixed(1) + " m";
+        selectedX.toFixed(1) +
+        " m";
 
 
     ytCurrentDisplacement.textContent =
-        displacement.toFixed(2) + " m";
+        displacement.toFixed(2) +
+        " m";
 
 
     yxTime.textContent =
-        time.toFixed(2) + " s";
+        time.toFixed(2) +
+        " s";
 }
 
 
@@ -312,7 +342,7 @@ function clearCanvas(ctx, canvas) {
 
 
 /* =========================================================
-   10. MAIN WAVE DIAGRAM
+   10. MAIN TRAVELLING WAVE
    ========================================================= */
 
 function drawWave() {
@@ -331,25 +361,34 @@ function drawWave() {
 
 
     const left = 45;
-    const right = width - 25;
+
+    const right =
+        width - 25;
+
 
     const centerY =
         height / 2;
 
+
     const waveWidth =
         right - left;
 
+
     const scaleX =
         waveWidth / WAVE_LENGTH;
+
 
     const scaleY =
         (height * 0.32) / 1.5;
 
 
-    /* Background */
+    /* -----------------------------------------------------
+       Background
+       ----------------------------------------------------- */
 
     waveCtx.fillStyle =
         "#ffffff";
+
 
     waveCtx.fillRect(
         0,
@@ -375,23 +414,28 @@ function drawWave() {
         centerY
     );
 
+
     waveCtx.strokeStyle =
         "#999";
 
+
     waveCtx.lineWidth = 1;
+
 
     waveCtx.setLineDash([
         6,
         5
     ]);
 
+
     waveCtx.stroke();
+
 
     waveCtx.setLineDash([]);
 
 
     /* -----------------------------------------------------
-       Wave
+       Travelling wave
        ----------------------------------------------------- */
 
     waveCtx.beginPath();
@@ -406,14 +450,17 @@ function drawWave() {
         const x =
             px / scaleX;
 
+
         const y =
             getDisplacement(
                 x,
                 time
             );
 
+
         const screenX =
             left + px;
+
 
         const screenY =
             centerY -
@@ -440,7 +487,9 @@ function drawWave() {
     waveCtx.strokeStyle =
         "#2563eb";
 
+
     waveCtx.lineWidth = 3;
+
 
     waveCtx.stroke();
 
@@ -486,6 +535,7 @@ function drawWave() {
 
         waveCtx.beginPath();
 
+
         waveCtx.arc(
             screenX,
             screenY,
@@ -500,8 +550,10 @@ function drawWave() {
             waveCtx.fillStyle =
                 "#18a558";
 
+
             waveCtx.strokeStyle =
                 "#0b6b38";
+
 
             waveCtx.lineWidth = 2;
 
@@ -510,14 +562,17 @@ function drawWave() {
             waveCtx.fillStyle =
                 "#555";
 
+
             waveCtx.strokeStyle =
                 "#333";
+
 
             waveCtx.lineWidth = 1;
         }
 
 
         waveCtx.fill();
+
         waveCtx.stroke();
 
 
@@ -529,10 +584,12 @@ function drawWave() {
 
             waveCtx.beginPath();
 
+
             waveCtx.moveTo(
                 screenX,
                 centerY
             );
+
 
             waveCtx.lineTo(
                 screenX,
@@ -543,28 +600,35 @@ function drawWave() {
             waveCtx.strokeStyle =
                 "#18a558";
 
+
             waveCtx.lineWidth = 2;
+
 
             waveCtx.setLineDash([
                 5,
                 4
             ]);
 
+
             waveCtx.stroke();
+
 
             waveCtx.setLineDash([]);
 
 
-            /* Label */
+            /* Selected particle label */
 
             waveCtx.fillStyle =
                 "#18a558";
 
+
             waveCtx.font =
                 "bold 14px Arial";
 
+
             waveCtx.textAlign =
                 "center";
+
 
             waveCtx.fillText(
                 "Selected particle",
@@ -582,11 +646,14 @@ function drawWave() {
     waveCtx.fillStyle =
         "#555";
 
+
     waveCtx.font =
         "13px Arial";
 
+
     waveCtx.textAlign =
         "left";
+
 
     waveCtx.fillText(
         "Equilibrium",
@@ -602,8 +669,10 @@ function drawWave() {
     const arrowY =
         height - 28;
 
+
     const arrowStart =
         width * 0.65;
+
 
     const arrowEnd =
         width - 35;
@@ -611,25 +680,30 @@ function drawWave() {
 
     waveCtx.beginPath();
 
+
     waveCtx.moveTo(
         arrowStart,
         arrowY
     );
 
+
     waveCtx.lineTo(
         arrowEnd,
         arrowY
     );
+
 
     waveCtx.lineTo(
         arrowEnd - 10,
         arrowY - 6
     );
 
+
     waveCtx.moveTo(
         arrowEnd,
         arrowY
     );
+
 
     waveCtx.lineTo(
         arrowEnd - 10,
@@ -640,7 +714,9 @@ function drawWave() {
     waveCtx.strokeStyle =
         "#222";
 
+
     waveCtx.lineWidth = 2;
+
 
     waveCtx.stroke();
 
@@ -648,11 +724,14 @@ function drawWave() {
     waveCtx.fillStyle =
         "#222";
 
+
     waveCtx.font =
         "bold 13px Arial";
 
+
     waveCtx.textAlign =
         "center";
+
 
     waveCtx.fillText(
         "Wave travels →",
@@ -671,20 +750,25 @@ function drawWave() {
 
     waveCtx.beginPath();
 
+
     waveCtx.moveTo(
         left,
         axisY
     );
+
 
     waveCtx.lineTo(
         right,
         axisY
     );
 
+
     waveCtx.strokeStyle =
         "#555";
 
+
     waveCtx.lineWidth = 1;
+
 
     waveCtx.stroke();
 
@@ -692,8 +776,10 @@ function drawWave() {
     waveCtx.font =
         "12px Arial";
 
+
     waveCtx.fillStyle =
         "#555";
+
 
     waveCtx.textAlign =
         "center";
@@ -712,15 +798,18 @@ function drawWave() {
 
         waveCtx.beginPath();
 
+
         waveCtx.moveTo(
             screenX,
             axisY
         );
 
+
         waveCtx.lineTo(
             screenX,
             axisY + 5
         );
+
 
         waveCtx.stroke();
 
@@ -740,6 +829,7 @@ function drawWave() {
     const ampX =
         left + 15;
 
+
     const ampTop =
         centerY -
         amplitude * scaleY;
@@ -747,10 +837,12 @@ function drawWave() {
 
     waveCtx.beginPath();
 
+
     waveCtx.moveTo(
         ampX,
         centerY
     );
+
 
     waveCtx.lineTo(
         ampX,
@@ -761,7 +853,9 @@ function drawWave() {
     waveCtx.strokeStyle =
         "#d97706";
 
+
     waveCtx.lineWidth = 2;
+
 
     waveCtx.stroke();
 
@@ -769,11 +863,14 @@ function drawWave() {
     waveCtx.fillStyle =
         "#d97706";
 
+
     waveCtx.font =
         "bold 13px Arial";
 
+
     waveCtx.textAlign =
         "left";
+
 
     waveCtx.fillText(
         "A",
@@ -787,17 +884,16 @@ function drawWave() {
    11. y-t GRAPH
    =========================================================
 
-   IMPORTANT:
-
-   This graph represents ONE particle.
+   ONE particle.
 
    x = selectedX is fixed.
 
-   Only TIME changes.
+   t changes continuously.
 
-   The graph begins at t = 0 and
-   progressively builds as the
-   simulation runs.
+   The graph does NOT stop at a fixed time.
+
+   Once the visible window is filled,
+   the graph automatically scrolls.
    ========================================================= */
 
 function drawYTGraph() {
@@ -816,22 +912,32 @@ function drawYTGraph() {
 
 
     const left = 48;
-    const right = width - 20;
+
+    const right =
+        width - 20;
+
 
     const top = 20;
-    const bottom = height - 35;
+
+    const bottom =
+        height - 35;
+
 
     const graphWidth =
         right - left;
+
 
     const graphHeight =
         bottom - top;
 
 
-    /* Background */
+    /* -----------------------------------------------------
+       Background
+       ----------------------------------------------------- */
 
     ytCtx.fillStyle =
         "#ffffff";
+
 
     ytCtx.fillRect(
         0,
@@ -841,12 +947,52 @@ function drawYTGraph() {
     );
 
 
-    /* Coordinate conversion */
+    /* -----------------------------------------------------
+       Dynamic time window
+       ----------------------------------------------------- */
+
+    let startTime = 0;
+
+    let endTime =
+        YT_WINDOW;
+
+
+    /*
+       Initially:
+
+           0 → 6 s
+
+       Later:
+
+           1 → 7 s
+           2 → 8 s
+           3 → 9 s
+           ...
+
+       Simulation time itself remains unlimited.
+    */
+
+    if (time > YT_WINDOW) {
+
+        startTime =
+            time - YT_WINDOW;
+
+        endTime =
+            time;
+    }
+
+
+    /* -----------------------------------------------------
+       Coordinate conversion
+       ----------------------------------------------------- */
 
     function graphX(t) {
 
         return left +
-            (t / GRAPH_TIME) *
+            (
+                (t - startTime) /
+                (endTime - startTime)
+            ) *
             graphWidth;
     }
 
@@ -856,23 +1002,36 @@ function drawYTGraph() {
         return (
             top +
             graphHeight / 2 -
-            y * (graphHeight / 3)
+            y *
+            (graphHeight / 3)
         );
     }
 
 
-    /* Grid */
+    /* -----------------------------------------------------
+       Grid
+       ----------------------------------------------------- */
 
     ytCtx.strokeStyle =
         "#e2e2e2";
 
+
     ytCtx.lineWidth = 1;
 
 
+    const gridStep = 0.5;
+
+
+    const firstGrid =
+        Math.ceil(
+            startTime / gridStep
+        ) * gridStep;
+
+
     for (
-        let t = 0;
-        t <= GRAPH_TIME;
-        t += 0.5
+        let t = firstGrid;
+        t <= endTime;
+        t += gridStep
     ) {
 
         const x =
@@ -881,19 +1040,24 @@ function drawYTGraph() {
 
         ytCtx.beginPath();
 
+
         ytCtx.moveTo(
             x,
             top
         );
+
 
         ytCtx.lineTo(
             x,
             bottom
         );
 
+
         ytCtx.stroke();
     }
 
+
+    /* Horizontal grid */
 
     for (
         let y = -1.5;
@@ -907,28 +1071,35 @@ function drawYTGraph() {
 
         ytCtx.beginPath();
 
+
         ytCtx.moveTo(
             left,
             screenY
         );
+
 
         ytCtx.lineTo(
             right,
             screenY
         );
 
+
         ytCtx.stroke();
     }
 
 
-    /* Equilibrium */
+    /* -----------------------------------------------------
+       Equilibrium
+       ----------------------------------------------------- */
 
     ytCtx.beginPath();
+
 
     ytCtx.moveTo(
         left,
         graphY(0)
     );
+
 
     ytCtx.lineTo(
         right,
@@ -939,135 +1110,138 @@ function drawYTGraph() {
     ytCtx.strokeStyle =
         "#888";
 
+
     ytCtx.setLineDash([
         5,
         4
     ]);
 
+
     ytCtx.stroke();
+
 
     ytCtx.setLineDash([]);
 
 
-    /* Axes */
+    /* -----------------------------------------------------
+       Axes
+       ----------------------------------------------------- */
 
     ytCtx.strokeStyle =
         "#333";
 
+
     ytCtx.lineWidth = 1.5;
 
+
     ytCtx.beginPath();
+
 
     ytCtx.moveTo(
         left,
         top
     );
 
+
     ytCtx.lineTo(
         left,
         bottom
     );
+
 
     ytCtx.lineTo(
         right,
         bottom
     );
 
+
     ytCtx.stroke();
 
 
     /* -----------------------------------------------------
-       Draw particle history
+       Particle history
        ----------------------------------------------------- */
 
-    const graphEndTime =
-        Math.min(
-            time,
-            GRAPH_TIME
-        );
+    const points = 500;
 
 
-    if (graphEndTime > 0) {
-
-        ytCtx.beginPath();
+    ytCtx.beginPath();
 
 
-        const points = 300;
+    for (
+        let i = 0;
+        i <= points;
+        i++
+    ) {
+
+        const t =
+            startTime +
+            (
+                endTime -
+                startTime
+            ) *
+            i /
+            points;
 
 
-        for (
-            let i = 0;
-            i <= points;
-            i++
-        ) {
-
-            const t =
-                graphEndTime *
-                i /
-                points;
+        const y =
+            getDisplacement(
+                selectedX,
+                t
+            );
 
 
-            const y =
-                getDisplacement(
-                    selectedX,
-                    t
-                );
+        const screenX =
+            graphX(t);
 
 
-            const screenX =
-                graphX(t);
-
-            const screenY =
-                graphY(y);
+        const screenY =
+            graphY(y);
 
 
-            if (i === 0) {
+        if (i === 0) {
 
-                ytCtx.moveTo(
-                    screenX,
-                    screenY
-                );
+            ytCtx.moveTo(
+                screenX,
+                screenY
+            );
 
-            } else {
+        } else {
 
-                ytCtx.lineTo(
-                    screenX,
-                    screenY
-                );
-            }
+            ytCtx.lineTo(
+                screenX,
+                screenY
+            );
         }
-
-
-        ytCtx.strokeStyle =
-            "#2563eb";
-
-        ytCtx.lineWidth = 3;
-
-        ytCtx.stroke();
     }
+
+
+    ytCtx.strokeStyle =
+        "#2563eb";
+
+
+    ytCtx.lineWidth = 3;
+
+
+    ytCtx.stroke();
 
 
     /* -----------------------------------------------------
        Current time marker
        ----------------------------------------------------- */
 
-    const markerTime =
-        Math.min(
-            time,
-            GRAPH_TIME
-        );
-
-
     const currentX =
-        graphX(markerTime);
+        graphX(time);
 
 
     ytCtx.beginPath();
+
 
     ytCtx.moveTo(
         currentX,
         top
     );
+
 
     ytCtx.lineTo(
         currentX,
@@ -1078,28 +1252,32 @@ function drawYTGraph() {
     ytCtx.strokeStyle =
         "#18a558";
 
+
     ytCtx.lineWidth = 2;
+
 
     ytCtx.setLineDash([
         5,
         4
     ]);
 
+
     ytCtx.stroke();
+
 
     ytCtx.setLineDash([]);
 
 
-    /* Current particle point */
+    /* -----------------------------------------------------
+       Current particle point
+       ----------------------------------------------------- */
 
     const currentY =
-        getDisplacement(
-            selectedX,
-            markerTime
-        );
+        getSelectedDisplacement();
 
 
     ytCtx.beginPath();
+
 
     ytCtx.arc(
         currentX,
@@ -1113,36 +1291,56 @@ function drawYTGraph() {
     ytCtx.fillStyle =
         "#18a558";
 
+
     ytCtx.fill();
 
 
-    /* Current time label */
+    /* -----------------------------------------------------
+       Current time label
+       ----------------------------------------------------- */
 
     ytCtx.fillStyle =
         "#18a558";
 
+
     ytCtx.font =
         "bold 12px Arial";
+
 
     ytCtx.textAlign =
         "center";
 
+
+    const labelX =
+        Math.max(
+            left + 25,
+            Math.min(
+                right - 25,
+                currentX
+            )
+        );
+
+
     ytCtx.fillText(
         "t = " +
-        markerTime.toFixed(2) +
+        time.toFixed(2) +
         " s",
-        currentX,
+        labelX,
         top + 14
     );
 
 
-    /* Axis labels */
+    /* -----------------------------------------------------
+       Axis labels
+       ----------------------------------------------------- */
 
     ytCtx.fillStyle =
         "#333";
 
+
     ytCtx.font =
         "13px Arial";
+
 
     ytCtx.textAlign =
         "center";
@@ -1157,10 +1355,12 @@ function drawYTGraph() {
 
     ytCtx.save();
 
+
     ytCtx.translate(
         15,
         (top + bottom) / 2
     );
+
 
     ytCtx.rotate(
         -Math.PI / 2
@@ -1177,19 +1377,31 @@ function drawYTGraph() {
     ytCtx.restore();
 
 
-    /* Time labels */
+    /* -----------------------------------------------------
+       Dynamic time labels
+       ----------------------------------------------------- */
 
     ytCtx.textAlign =
         "center";
+
 
     ytCtx.font =
         "12px Arial";
 
 
+    const labelStep = 1;
+
+
+    const firstLabel =
+        Math.ceil(
+            startTime / labelStep
+        ) * labelStep;
+
+
     for (
-        let t = 0;
-        t <= GRAPH_TIME;
-        t++
+        let t = firstLabel;
+        t <= endTime;
+        t += labelStep
     ) {
 
         ytCtx.fillText(
@@ -1200,7 +1412,9 @@ function drawYTGraph() {
     }
 
 
-    /* Displacement labels */
+    /* -----------------------------------------------------
+       Displacement labels
+       ----------------------------------------------------- */
 
     ytCtx.textAlign =
         "right";
@@ -1225,16 +1439,14 @@ function drawYTGraph() {
    12. y-x GRAPH
    =========================================================
 
-   IMPORTANT:
+   ALL particles are represented.
 
-   This graph represents ALL particles.
-
-   Time is fixed at the current simulation time.
+   Time is fixed at the current instant.
 
    x changes.
 
-   Therefore it shows the complete
-   instantaneous wave profile.
+   Therefore this is the instantaneous
+   spatial profile of the complete wave.
    ========================================================= */
 
 function drawYXGraph() {
@@ -1253,22 +1465,32 @@ function drawYXGraph() {
 
 
     const left = 48;
-    const right = width - 20;
+
+    const right =
+        width - 20;
+
 
     const top = 20;
-    const bottom = height - 35;
+
+    const bottom =
+        height - 35;
+
 
     const graphWidth =
         right - left;
+
 
     const graphHeight =
         bottom - top;
 
 
-    /* Background */
+    /* -----------------------------------------------------
+       Background
+       ----------------------------------------------------- */
 
     yxCtx.fillStyle =
         "#ffffff";
+
 
     yxCtx.fillRect(
         0,
@@ -1278,12 +1500,16 @@ function drawYXGraph() {
     );
 
 
-    /* Coordinate conversion */
+    /* -----------------------------------------------------
+       Coordinate conversion
+       ----------------------------------------------------- */
 
     function graphX(x) {
 
         return left +
-            (x / WAVE_LENGTH) *
+            (
+                x / WAVE_LENGTH
+            ) *
             graphWidth;
     }
 
@@ -1293,15 +1519,19 @@ function drawYXGraph() {
         return (
             top +
             graphHeight / 2 -
-            y * (graphHeight / 3)
+            y *
+            (graphHeight / 3)
         );
     }
 
 
-    /* Grid */
+    /* -----------------------------------------------------
+       Grid
+       ----------------------------------------------------- */
 
     yxCtx.strokeStyle =
         "#e2e2e2";
+
 
     yxCtx.lineWidth = 1;
 
@@ -1318,15 +1548,18 @@ function drawYXGraph() {
 
         yxCtx.beginPath();
 
+
         yxCtx.moveTo(
             screenX,
             top
         );
 
+
         yxCtx.lineTo(
             screenX,
             bottom
         );
+
 
         yxCtx.stroke();
     }
@@ -1344,28 +1577,35 @@ function drawYXGraph() {
 
         yxCtx.beginPath();
 
+
         yxCtx.moveTo(
             left,
             screenY
         );
+
 
         yxCtx.lineTo(
             right,
             screenY
         );
 
+
         yxCtx.stroke();
     }
 
 
-    /* Equilibrium */
+    /* -----------------------------------------------------
+       Equilibrium
+       ----------------------------------------------------- */
 
     yxCtx.beginPath();
+
 
     yxCtx.moveTo(
         left,
         graphY(0)
     );
+
 
     yxCtx.lineTo(
         right,
@@ -1376,39 +1616,50 @@ function drawYXGraph() {
     yxCtx.strokeStyle =
         "#888";
 
+
     yxCtx.setLineDash([
         5,
         4
     ]);
 
+
     yxCtx.stroke();
+
 
     yxCtx.setLineDash([]);
 
 
-    /* Axes */
+    /* -----------------------------------------------------
+       Axes
+       ----------------------------------------------------- */
 
     yxCtx.strokeStyle =
         "#333";
 
+
     yxCtx.lineWidth = 1.5;
 
+
     yxCtx.beginPath();
+
 
     yxCtx.moveTo(
         left,
         top
     );
 
+
     yxCtx.lineTo(
         left,
         bottom
     );
 
+
     yxCtx.lineTo(
         right,
         bottom
     );
+
 
     yxCtx.stroke();
 
@@ -1442,6 +1693,7 @@ function drawYXGraph() {
         const screenX =
             graphX(x);
 
+
         const screenY =
             graphY(y);
 
@@ -1466,7 +1718,9 @@ function drawYXGraph() {
     yxCtx.strokeStyle =
         "#f59e0b";
 
+
     yxCtx.lineWidth = 3;
+
 
     yxCtx.stroke();
 
@@ -1485,10 +1739,12 @@ function drawYXGraph() {
 
     yxCtx.beginPath();
 
+
     yxCtx.moveTo(
         selectedScreenX,
         top
     );
+
 
     yxCtx.lineTo(
         selectedScreenX,
@@ -1499,14 +1755,18 @@ function drawYXGraph() {
     yxCtx.strokeStyle =
         "#18a558";
 
+
     yxCtx.lineWidth = 2;
+
 
     yxCtx.setLineDash([
         5,
         4
     ]);
 
+
     yxCtx.stroke();
+
 
     yxCtx.setLineDash([]);
 
@@ -1514,6 +1774,7 @@ function drawYXGraph() {
     /* Selected particle point */
 
     yxCtx.beginPath();
+
 
     yxCtx.arc(
         selectedScreenX,
@@ -1527,6 +1788,7 @@ function drawYXGraph() {
     yxCtx.fillStyle =
         "#18a558";
 
+
     yxCtx.fill();
 
 
@@ -1537,8 +1799,10 @@ function drawYXGraph() {
     yxCtx.fillStyle =
         "#333";
 
+
     yxCtx.font =
         "13px Arial";
+
 
     yxCtx.textAlign =
         "center";
@@ -1553,10 +1817,12 @@ function drawYXGraph() {
 
     yxCtx.save();
 
+
     yxCtx.translate(
         15,
         (top + bottom) / 2
     );
+
 
     yxCtx.rotate(
         -Math.PI / 2
@@ -1577,6 +1843,7 @@ function drawYXGraph() {
 
     yxCtx.textAlign =
         "center";
+
 
     yxCtx.font =
         "12px Arial";
@@ -1702,8 +1969,10 @@ playBtn.addEventListener(
             playBtn.textContent =
                 "⏸ Pause";
 
+
             lastTime =
                 performance.now();
+
 
             requestAnimationFrame(
                 animate
@@ -1769,8 +2038,10 @@ function animate(currentTime) {
 
 
     const deltaTime =
-        (currentTime - lastTime) /
-        1000;
+        (
+            currentTime -
+            lastTime
+        ) / 1000;
 
 
     lastTime =
@@ -1792,11 +2063,8 @@ function animate(currentTime) {
 
 
 /* =========================================================
-   19. SELECT PARTICLE BY DRAGGING
+   19. PARTICLE POSITION FROM SCREEN
    ========================================================= */
-
-let draggingParticle = false;
-
 
 function getParticleXFromScreen(clientX) {
 
@@ -1811,9 +2079,11 @@ function getParticleXFromScreen(clientX) {
 
 
     let x =
-        (clientX -
-         rect.left -
-         left) /
+        (
+            clientX -
+            rect.left -
+            left
+        ) /
         (right - left);
 
 
@@ -1830,7 +2100,12 @@ function getParticleXFromScreen(clientX) {
 }
 
 
-/* Mouse down */
+/* =========================================================
+   20. MOUSE PARTICLE DRAGGING
+   ========================================================= */
+
+let draggingParticle = false;
+
 
 waveCanvas.addEventListener(
     "mousedown",
@@ -1838,20 +2113,21 @@ waveCanvas.addEventListener(
 
         draggingParticle = true;
 
+
         selectedX =
             getParticleXFromScreen(
                 event.clientX
             );
 
+
         particleSlider.value =
             selectedX;
+
 
         drawEverything();
     }
 );
 
-
-/* Mouse move */
 
 window.addEventListener(
     "mousemove",
@@ -1878,8 +2154,6 @@ window.addEventListener(
 );
 
 
-/* Mouse up */
-
 window.addEventListener(
     "mouseup",
     function () {
@@ -1890,7 +2164,7 @@ window.addEventListener(
 
 
 /* =========================================================
-   20. TOUCH DRAGGING
+   21. TOUCH PARTICLE DRAGGING
    ========================================================= */
 
 waveCanvas.addEventListener(
@@ -1915,6 +2189,7 @@ waveCanvas.addEventListener(
 
 
         drawEverything();
+
     },
     {
         passive: true
@@ -1947,6 +2222,7 @@ waveCanvas.addEventListener(
 
 
         drawEverything();
+
     },
     {
         passive: true
@@ -1964,7 +2240,7 @@ waveCanvas.addEventListener(
 
 
 /* =========================================================
-   21. KEYBOARD CONTROL
+   22. KEYBOARD CONTROL
    ========================================================= */
 
 document.addEventListener(
@@ -2008,7 +2284,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   22. INITIALIZATION
+   23. INITIALIZATION
    ========================================================= */
 
 function initialize() {
@@ -2016,29 +2292,50 @@ function initialize() {
     amplitudeSlider.value =
         amplitude;
 
+
     wavelengthSlider.value =
         wavelength;
 
+
     frequencySlider.value =
         frequency;
+
 
     particleSlider.value =
         selectedX;
 
 
-    resizeCanvas(waveCanvas);
-    resizeCanvas(ytCanvas);
-    resizeCanvas(yxCanvas);
+    resizeCanvas(
+        waveCanvas
+    );
+
+
+    resizeCanvas(
+        ytCanvas
+    );
+
+
+    resizeCanvas(
+        yxCanvas
+    );
 
 
     drawEverything();
 }
 
 
+/* =========================================================
+   24. WINDOW RESIZE
+   ========================================================= */
+
 window.addEventListener(
     "resize",
     resizeAllCanvases
 );
 
+
+/* =========================================================
+   25. START
+   ========================================================= */
 
 initialize();
