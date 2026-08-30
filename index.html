@@ -1,347 +1,645 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Wave: y-t and y-x Graphs</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="style.css">
+    <title>
+        Wave Motion Simulation
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
+
 
 <body>
 
 <div class="container">
 
-    <!-- =====================================================
+
+    <!-- =================================================
          TITLE
-         ===================================================== -->
+         ================================================= -->
 
-    <header>
-        <h1>Wave Motion: y–t and y–x Graphs</h1>
+    <h1>
+        Wave Motion: y–t and y–x Graphs
+    </h1>
 
-        <p class="intro">
-            Explore the difference between the motion of one particle
-            and the shape of the whole wave.
-        </p>
-    </header>
-
-
-    <!-- =====================================================
-         MAIN WAVE SIMULATION
-         ===================================================== -->
-
-    <section class="card">
-
-        <h2>1. Travelling Wave</h2>
-
-        <p class="description">
-            The <span class="green-text">green particle</span> is one
-            particular particle being observed.
-        </p>
-
-        <canvas id="waveCanvas"></canvas>
-
-        <div class="wave-info">
-
-            <span>
-                Wave direction: <b>→</b>
-            </span>
-
-            <span>
-                Selected particle:
-                <b id="particlePosition">2.0 m</b>
-            </span>
-
-            <span>
-                Time:
-                <b id="timeDisplay">0.00 s</b>
-            </span>
-
-            <span>
-                Displacement:
-                <b id="displacementDisplay">0.00 m</b>
-            </span>
-
-        </div>
-
-    </section>
+    <p class="subtitle">
+        Understand the difference between particle motion
+        and the instantaneous wave profile.
+    </p>
 
 
-    <!-- =====================================================
-         CONTROLS
-         ===================================================== -->
 
-    <section class="card">
+    <!-- =================================================
+         THREE-COLUMN MAIN LAYOUT
+         ================================================= -->
 
-        <h2>2. Simulation Controls</h2>
-
-        <div class="controls">
-
-            <button id="playBtn">▶ Play</button>
-
-            <button id="resetBtn">↻ Reset</button>
-
-            <button id="freezeBtn">❚❚ Freeze</button>
-
-        </div>
+    <main class="simulation-layout">
 
 
-        <div class="slider-group">
+        <!-- =================================================
+             COLUMN 1
+             MAIN TRAVELLING WAVE
+             ================================================= -->
 
-            <label>
-                Amplitude A:
-                <span id="amplitudeValue">1.0</span> m
-            </label>
+        <section class="panel wave-panel">
 
-            <input
-                type="range"
-                id="amplitudeSlider"
-                min="0.2"
-                max="1.5"
-                step="0.1"
-                value="1"
-            >
-
-        </div>
+            <div class="panel-title">
+                🌊 Travelling Wave
+            </div>
 
 
-        <div class="slider-group">
+            <div class="wave-canvas-container">
 
-            <label>
-                Wavelength λ:
-                <span id="wavelengthValue">4.0</span> m
-            </label>
-
-            <input
-                type="range"
-                id="wavelengthSlider"
-                min="1"
-                max="8"
-                step="0.5"
-                value="4"
-            >
-
-        </div>
-
-
-        <div class="slider-group">
-
-            <label>
-                Frequency f:
-                <span id="frequencyValue">0.5</span> Hz
-            </label>
-
-            <input
-                type="range"
-                id="frequencySlider"
-                min="0.1"
-                max="2"
-                step="0.1"
-                value="0.5"
-            >
-
-        </div>
-
-
-        <div class="slider-group">
-
-            <label>
-                Selected particle position x:
-                <span id="selectedXValue">2.0</span> m
-            </label>
-
-            <input
-                type="range"
-                id="particleSlider"
-                min="0"
-                max="8"
-                step="0.1"
-                value="2"
-            >
-
-        </div>
-
-
-        <div class="wave-speed">
-
-            Wave speed:
-
-            <b id="speedDisplay">2.00 m/s</b>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         TWO GRAPHS
-         ===================================================== -->
-
-    <section class="graphs">
-
-        <!-- y-t GRAPH -->
-
-        <div class="card graph-card">
-
-            <h2>3. Displacement–Time Graph (y–t)</h2>
-
-            <p class="description">
-                <b>One particle at a fixed position.</b>
-                Time changes while its position remains fixed.
-            </p>
-
-            <canvas id="ytCanvas"></canvas>
-
-            <div class="graph-info">
-
-                <span>
-                    Particle x =
-                    <b id="ytParticlePosition">2.0 m</b>
-                </span>
-
-                <span>
-                    Current y =
-                    <b id="ytCurrentDisplacement">0.00 m</b>
-                </span>
+                <canvas
+                    id="waveCanvas"
+                ></canvas>
 
             </div>
 
-        </div>
+        </section>
 
 
-        <!-- y-x GRAPH -->
 
-        <div class="card graph-card">
+        <!-- =================================================
+             COLUMN 2
+             TWO GRAPHS
+             ================================================= -->
 
-            <h2>4. Displacement–Distance Graph (y–x)</h2>
-
-            <p class="description">
-                <b>Whole wave at one instant.</b>
-                Time is fixed while position changes.
-            </p>
-
-            <canvas id="yxCanvas"></canvas>
-
-            <div class="graph-info">
-
-                <span>
-                    Current time =
-                    <b id="yxTime">0.00 s</b>
-                </span>
-
-                <span>
-                    Green line =
-                    <b>selected particle</b>
-                </span>
-
-            </div>
-
-        </div>
-
-    </section>
+        <section class="graph-panel">
 
 
-    <!-- =====================================================
-         KEY DIFFERENCE
-         ===================================================== -->
+            <!-- =================================================
+                 y-t GRAPH
+                 ================================================= -->
 
-    <section class="card concept-card">
+            <div class="graph-box">
 
-        <h2>5. The Key Difference</h2>
+                <div class="graph-title">
+                    y–t Graph — One Particle
+                </div>
 
-        <div class="concept-grid">
+                <div class="graph-description">
 
-            <div class="concept yt-concept">
+                    Shows the displacement of the
+                    <strong class="selected-label">
+                        selected green particle
+                    </strong>
+                    as time passes.
 
-                <h3>y–t Graph</h3>
+                </div>
 
-                <p>
-                    Watch <strong>ONE particle</strong> at a fixed
-                    position as time passes.
-                </p>
 
-                <p class="key-point">
-                    Position is fixed → Time changes
-                </p>
+                <div class="graph-canvas-container">
+
+                    <canvas
+                        id="ytCanvas"
+                    ></canvas>
+
+                </div>
 
             </div>
 
 
-            <div class="concept yx-concept">
 
-                <h3>y–x Graph</h3>
+            <!-- =================================================
+                 y-x GRAPH
+                 ================================================= -->
 
-                <p>
-                    Take a snapshot of the <strong>WHOLE WAVE</strong>
-                    at one particular instant.
-                </p>
+            <div class="graph-box">
 
-                <p class="key-point">
-                    Time is fixed → Position changes
-                </p>
+                <div class="graph-title">
+                    y–x Graph — Whole Wave
+                </div>
+
+                <div class="graph-description">
+
+                    Shows the displacement of
+                    <strong class="yx-label">
+                        all particles
+                    </strong>
+                    along the wave at one instant.
+
+                </div>
+
+
+                <div class="graph-canvas-container">
+
+                    <canvas
+                        id="yxCanvas"
+                    ></canvas>
+
+                </div>
 
             </div>
 
-        </div>
 
-    </section>
-
-
-    <!-- =====================================================
-         PHYSICS RELATIONSHIP
-         ===================================================== -->
-
-    <section class="card">
-
-        <h2>6. Wave Equation</h2>
-
-        <p>
-            The simulation uses the travelling-wave equation:
-        </p>
-
-        <div class="equation">
-            y(x,t) = A sin(kx − ωt)
-        </div>
-
-        <p>
-            where:
-        </p>
-
-        <ul>
-            <li><b>A</b> = amplitude</li>
-            <li><b>λ</b> = wavelength</li>
-            <li><b>f</b> = frequency</li>
-            <li><b>k = 2π/λ</b> = wave number</li>
-            <li><b>ω = 2πf</b> = angular frequency</li>
-            <li><b>v = fλ</b> = wave speed</li>
-        </ul>
-
-    </section>
+        </section>
 
 
-    <!-- =====================================================
-         FOOTER
-         ===================================================== -->
 
-    <footer>
+        <!-- =================================================
+             COLUMN 3
+             CONTROLS AND INFORMATION
+             ================================================= -->
 
-        <p>
-            <strong>Remember:</strong>
-            The wave travels horizontally, while individual particles
-            oscillate vertically about their equilibrium positions.
-        </p>
+        <aside class="control-panel">
 
-    </footer>
+
+            <!-- =================================================
+                 CONTROLS
+                 ================================================= -->
+
+            <section class="control-section">
+
+                <h2>
+                    ⚙ Controls
+                </h2>
+
+
+                <!-- Amplitude -->
+
+                <div class="slider-group">
+
+                    <div class="slider-label">
+
+                        <span>
+                            Amplitude, A
+                        </span>
+
+                        <span
+                            class="slider-value"
+                            id="amplitudeValue"
+                        >
+                            1.0
+                        </span>
+
+                    </div>
+
+
+                    <input
+                        type="range"
+                        id="amplitudeSlider"
+                        min="0.2"
+                        max="1.5"
+                        step="0.1"
+                        value="1.0"
+                    >
+
+                </div>
+
+
+
+                <!-- Wavelength -->
+
+                <div class="slider-group">
+
+                    <div class="slider-label">
+
+                        <span>
+                            Wavelength, λ
+                        </span>
+
+                        <span
+                            class="slider-value"
+                            id="wavelengthValue"
+                        >
+                            4.0
+                        </span>
+
+                    </div>
+
+
+                    <input
+                        type="range"
+                        id="wavelengthSlider"
+                        min="2"
+                        max="8"
+                        step="0.5"
+                        value="4.0"
+                    >
+
+                </div>
+
+
+
+                <!-- Frequency -->
+
+                <div class="slider-group">
+
+                    <div class="slider-label">
+
+                        <span>
+                            Frequency, f
+                        </span>
+
+                        <span
+                            class="slider-value"
+                            id="frequencyValue"
+                        >
+                            0.5
+                        </span>
+
+                    </div>
+
+
+                    <input
+                        type="range"
+                        id="frequencySlider"
+                        min="0.1"
+                        max="1.5"
+                        step="0.1"
+                        value="0.5"
+                    >
+
+                </div>
+
+
+
+                <!-- Selected particle -->
+
+                <div class="slider-group">
+
+                    <div class="slider-label">
+
+                        <span>
+                            Particle position, x
+                        </span>
+
+                        <span
+                            class="slider-value"
+                            id="selectedXValue"
+                        >
+                            2.0
+                        </span>
+
+                    </div>
+
+
+                    <input
+                        type="range"
+                        id="particleSlider"
+                        min="0"
+                        max="8"
+                        step="0.1"
+                        value="2.0"
+                    >
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 BUTTONS
+                 ================================================= -->
+
+            <section class="control-section">
+
+                <h3>
+                    Simulation
+                </h3>
+
+
+                <div class="button-row">
+
+                    <button
+                        id="playBtn"
+                        type="button"
+                    >
+                        ▶ Play
+                    </button>
+
+
+                    <button
+                        id="resetBtn"
+                        type="button"
+                    >
+                        ↻ Reset
+                    </button>
+
+
+                    <button
+                        id="freezeBtn"
+                        type="button"
+                    >
+                        ❚❚ Freeze
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CURRENT VALUES
+                 ================================================= -->
+
+            <section class="control-section">
+
+                <h3>
+                    Current Values
+                </h3>
+
+
+                <div class="value-grid">
+
+
+                    <div class="value-card">
+
+                        <div class="value-card-label">
+                            Time
+                        </div>
+
+                        <div
+                            class="value-card-value"
+                            id="timeDisplay"
+                        >
+                            0.00 s
+                        </div>
+
+                    </div>
+
+
+                    <div class="value-card">
+
+                        <div class="value-card-label">
+                            Displacement
+                        </div>
+
+                        <div
+                            class="value-card-value"
+                            id="displacementDisplay"
+                        >
+                            0.00 m
+                        </div>
+
+                    </div>
+
+
+                    <div class="value-card">
+
+                        <div class="value-card-label">
+                            Particle x
+                        </div>
+
+                        <div
+                            class="value-card-value"
+                            id="particlePosition"
+                        >
+                            2.0 m
+                        </div>
+
+                    </div>
+
+
+                    <div class="value-card">
+
+                        <div class="value-card-label">
+                            Wave speed
+                        </div>
+
+                        <div
+                            class="value-card-value"
+                            id="speedDisplay"
+                        >
+                            2.00 m/s
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 y-t INFORMATION
+                 ================================================= -->
+
+            <section class="control-section">
+
+                <h3 class="yt-label">
+                    y–t Particle
+                </h3>
+
+
+                <div class="info-text">
+
+                    Selected particle:
+
+                    <strong
+                        id="ytParticlePosition"
+                    >
+                        2.0 m
+                    </strong>
+
+                    <br>
+
+                    Current displacement:
+
+                    <strong
+                        id="ytCurrentDisplacement"
+                    >
+                        0.00 m
+                    </strong>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 y-x INFORMATION
+                 ================================================= -->
+
+            <section class="control-section">
+
+                <h3 class="yx-label">
+                    y–x Wave Profile
+                </h3>
+
+
+                <div class="info-text">
+
+                    Snapshot at:
+
+                    <strong
+                        id="yxTime"
+                    >
+                        0.00 s
+                    </strong>
+
+                    <br>
+
+                    Shows the displacement of
+                    particles at different positions.
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 WAVE EQUATION
+                 ================================================= -->
+
+            <section class="equation-box">
+
+                <div class="equation-title">
+                    Wave Equation
+                </div>
+
+
+                <div class="equation">
+
+                    y(x,t) = A sin(ωt − kx)
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 KEY DIFFERENCE
+                 ================================================= -->
+
+            <section class="key-difference">
+
+                <h3>
+                    🔑 Key Difference
+                </h3>
+
+
+                <div class="key-item">
+
+                    <strong class="yt-label">
+                        y–t Graph
+                    </strong>
+
+                    One particle is selected.
+
+                    Its position <strong>x</strong>
+                    stays fixed while
+
+                    <strong>time t</strong>
+                    changes.
+
+                </div>
+
+
+                <div class="key-item">
+
+                    <strong class="yx-label">
+                        y–x Graph
+                    </strong>
+
+                    Time is fixed at one instant.
+
+                    The graph shows
+
+                    <strong>all particles</strong>
+
+                    at different positions
+                    along the wave.
+
+                </div>
+
+
+                <div class="key-item">
+
+                    <strong class="selected-label">
+                        Green Particle
+                    </strong>
+
+                    The green particle is the
+                    particle being followed in
+                    the y–t graph.
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 PHYSICS RELATIONSHIPS
+                 ================================================= -->
+
+            <section class="control-section">
+
+                <h3>
+                    Physics Relationships
+                </h3>
+
+
+                <div class="info-text">
+
+                    <strong>
+                        Angular frequency:
+                    </strong>
+
+                    ω = 2πf
+
+                    <br><br>
+
+
+                    <strong>
+                        Wave number:
+                    </strong>
+
+                    k = 2π/λ
+
+                    <br><br>
+
+
+                    <strong>
+                        Wave speed:
+                    </strong>
+
+                    v = fλ
+
+                </div>
+
+            </section>
+
+
+        </aside>
+
+
+    </main>
 
 </div>
+
 
 
 <!-- =========================================================
      JAVASCRIPT
      ========================================================= -->
 
-<script src="script.js"></script>
+<script
+    src="script.js"
+></script>
+
 
 </body>
+
 </html>
